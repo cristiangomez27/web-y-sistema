@@ -1,0 +1,33 @@
+DirectoryIndex index.php index.html
+
+Options -Indexes
+RewriteEngine On
+
+# Proteger archivos sensibles si existen dentro del public_html.
+RedirectMatch 403 ^/ventas/private/
+RedirectMatch 403 ^/private/
+RedirectMatch 403 \.(env|ini|log|sql|bak)$
+RedirectMatch 403 ^/ventas/configuracion_web/data/
+
+# Rutas limpias de la tienda pública.
+RewriteRule ^producto/([0-9]+)-([a-z0-9-]+)/?$ producto.php?id=$1&slug=$2 [L,QSA]
+RewriteRule ^producto/([a-z0-9-]+)/?$ producto.php?slug=$1 [L,QSA]
+RewriteRule ^producto/([0-9]+)/?$ producto.php?id=$1 [L,QSA]
+RewriteRule ^colecciones/?$ categoria.php?slug=colecciones [L,QSA]
+RewriteRule ^novedades/?$ categoria.php?slug=novedades [L,QSA]
+RewriteRule ^carrito/?$ carrito.php [L,QSA]
+RewriteRule ^favoritos/?$ favoritos.php [L,QSA]
+RewriteRule ^deseos/?$ favoritos.php [L,QSA]
+RewriteRule ^contacto/?$ contacto.php [L,QSA]
+RewriteRule ^login-clientes/?$ login-clientes.php [L,QSA]
+RewriteRule ^trabajador-login/?$ trabajador-login.php [L,QSA]
+RewriteRule ^envios-devoluciones/?$ envios-devoluciones.php [L,QSA]
+RewriteRule ^aviso-privacidad/?$ aviso-privacidad.php [L,QSA]
+RewriteRule ^terminos-servicio/?$ terminos-servicio.php [L,QSA]
+
+# Cualquier categoría nueva creada desde Configuración Web.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !^/ventas/
+RewriteCond %{REQUEST_URI} !^/assets/
+RewriteRule ^([a-z0-9-]+)/?$ categoria.php?slug=$1 [L,QSA]
