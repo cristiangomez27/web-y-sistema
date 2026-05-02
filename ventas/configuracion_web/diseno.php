@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/_public_web_store.php';
+require_once __DIR__ . '/layout_web.php';
 $data = cw_load();
 $msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -9,10 +10,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   cw_save($data);
   $msg = 'Diseño público guardado.';
 }
-?><h1>Diseño Web Pública</h1><?php if($msg): ?><p><?= htmlspecialchars($msg) ?></p><?php endif; ?>
+cw_layout_header('Diseño Web Pública');
+?>
+<div class="cw-card"><h1>Diseño Web Pública</h1><?php if($msg): ?><p class="cw-msg ok"><?= htmlspecialchars($msg) ?></p><?php endif; ?>
 <form method="post">
-<input name="banner_principal" value="<?= htmlspecialchars($data['config']['banner_principal']) ?>" placeholder="Banner"><br>
-<input name="color_primario" value="<?= htmlspecialchars($data['config']['color_primario']) ?>"><br>
-<input name="color_secundario" value="<?= htmlspecialchars($data['config']['color_secundario']) ?>"><br>
-<button>Guardar</button></form>
-<p><a href="index.php">Volver</a></p>
+<input class="cw-input" name="banner_principal" value="<?= htmlspecialchars($data['config']['banner_principal']) ?>" placeholder="Banner"><br>
+<input class="cw-input" name="color_primario" value="<?= htmlspecialchars($data['config']['color_primario']) ?>"><br>
+<input class="cw-input" name="color_secundario" value="<?= htmlspecialchars($data['config']['color_secundario']) ?>"><br>
+<button class="cw-btn">Guardar</button></form></div>
+<?php cw_layout_footer(); ?>
