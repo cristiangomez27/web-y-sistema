@@ -272,8 +272,9 @@ function sw_normalize_web_data(array $data): array {
         $c['nombre'] = (string)($c['nombre'] ?? 'Categoría');
         $c['slug'] = sw_slug((string)($c['slug'] ?? $c['nombre']));
         $c['descripcion'] = (string)($c['descripcion'] ?? '');
-        $c['imagen'] = (string)($c['imagen'] ?? '');
-        $c['imagen_url'] = sw_abs_url($c['imagen']);
+        $imgRaw = (string)($c['imagen'] ?? $c['imagen_categoria'] ?? $c['imagen_principal'] ?? $c['image'] ?? $c['ruta_imagen'] ?? '');
+        $c['imagen'] = $imgRaw;
+        $c['imagen_url'] = sw_abs_url($imgRaw);
         $c['url'] = '/' . ltrim($c['slug'], '/');
         $c['activa'] = (int)($c['activa'] ?? 1);
         $c['menu'] = (int)($c['menu'] ?? 1);

@@ -42,7 +42,7 @@ $footerPaginas = array_values(array_filter($data['paginas'] ?? [], fn($p) => (in
             <?php if (!empty($negocio['direccion'])): ?><p><?= nl2br(sw_e($negocio['direccion'])) ?></p><?php endif; ?>
         </section>
     </div>
-    <div class="footer-bottom"><?= sw_e($negocio['copyright'] ?? ('© ' . date('Y') . ' Suave Urban Studio')) ?></div>
+    <div class="footer-bottom"><p><?= sw_e($negocio['copyright'] ?? ('© ' . date('Y') . ' Suave Urban Studio. Todos los derechos reservados.')) ?></p></div>
 </footer>
 
 <nav class="bottom-nav">
