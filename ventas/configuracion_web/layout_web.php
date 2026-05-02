@@ -21,7 +21,7 @@ function cw_layout_header(string $title = 'Configuración Web Pública'): void {
         .cw-btn{display:inline-block;background:#d4af37;color:#111;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
         .cw-nav a{color:#ffe08a;margin-right:10px}.cw-msg{padding:10px;border-radius:8px;margin:8px 0}.ok{background:#17341f}.err{background:#3d1c1c}
       </style>
-    </head><body><div class="cw-shell"><div class="cw-nav"><a href="index.php">Negocio/Footer</a><a href="diseno.php">Diseño</a><a href="categorias.php">Categorías</a><a href="productos.php">Productos</a><a href="index.php#drive">Drive</a></div>
+    </head><body><div class="cw-shell"><div class="cw-nav"><a href="index.php">Inicio</a><a href="categorias.php">Categorías</a><a href="productos.php">Productos</a><a href="diseno.php">Diseño</a></div>
     <?php
 }
 
