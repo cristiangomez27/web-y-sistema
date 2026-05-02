@@ -27,9 +27,11 @@ cw_layout_header('Categorías públicas'); ?>
 <button class="cw-btn"><?= $edit ? 'Actualizar' : 'Crear' ?></button></form></div>
 <div class="cw-card"><h2>Listado</h2>
 <?php foreach(($data['categorias']??[]) as $c): ?><div style="display:flex;gap:12px;align-items:center;border-bottom:1px solid #2f2f38;padding:8px 0">
-<?php if(!empty($c['imagen'])):?><img src="<?= htmlspecialchars(cw_public_asset_url((string)$c['imagen'])) ?>" style="width:56px;height:56px;object-fit:cover;border-radius:8px"><?php endif; ?>
-<div><b><?=htmlspecialchars($c['nombre'])?></b><div><?=htmlspecialchars($c['slug'])?> | <?=htmlspecialchars($c['url'])?></div><?php $ruta=(string)($c['imagen'] ?? ''); $f=__DIR__.'/../'.ltrim(str_replace('/ventas/','',$ruta),'/'); ?><?php $u=cw_public_asset_url($ruta); ?><div>Ruta: <?= htmlspecialchars($ruta) ?></div><div>URL renderizada: <?= htmlspecialchars($u) ?></div><div>Archivo físico: <?= is_file($f) ? 'OK' : 'NO EXISTE' ?></div><div><?= htmlspecialchars(cw_drive_status_text()) ?></div></div>
+<?php if(!empty($c['imagen'])):?><img src="<?= htmlspecialchars('/' . ltrim(cw_public_asset_url((string)$c['imagen']), '/')) ?>" style="width:56px;height:56px;object-fit:cover;border-radius:8px" data-preview-check><small data-preview-state style="display:block;color:#aaa">Cargando preview...</small><?php endif; ?>
+<div><b><?=htmlspecialchars($c['nombre'])?></b><div><?=htmlspecialchars($c['slug'])?> | <?=htmlspecialchars($c['url'])?></div><?php $ruta=(string)($c['imagen'] ?? ''); $f=__DIR__.'/../'.ltrim(str_replace('/ventas/','',$ruta),'/'); ?><?php $u='/' . ltrim(cw_public_asset_url($ruta), '/'); ?><div>Ruta: <?= htmlspecialchars($ruta) ?></div><div>URL renderizada: <?= htmlspecialchars($u) ?></div><div>Archivo físico: <?= is_file($f) ? 'OK' : 'NO EXISTE' ?></div><div><?= htmlspecialchars(cw_drive_status_text()) ?></div></div>
 <a class="cw-btn" href="?edit=<?= (int)$c['id'] ?>">Editar</a>
 <form method="post" style="display:inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="delete_id" value="<?= (int)$c['id'] ?>"><button class="cw-btn" onclick="return confirm('¿Eliminar?')">Eliminar</button></form>
 </div><?php endforeach; ?></div>
 <?php cw_layout_footer(); ?>
+
+<script>document.querySelectorAll('[data-preview-check]').forEach(function(img){var s=img.parentElement.querySelector('[data-preview-state]');if(!s)return;img.addEventListener('load',function(){s.textContent='Preview OK';s.style.color='#8fd98f';});img.addEventListener('error',function(){s.textContent='Preview NO CARGA';s.style.color='#ff9a9a';});});</script>

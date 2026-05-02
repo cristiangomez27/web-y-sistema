@@ -64,10 +64,10 @@ cw_layout_header('Productos públicos');
 <div class="cw-card"><h2>Listado de productos</h2>
 <?php foreach(($data['productos'] ?? []) as $p): ?>
   <div style="border-bottom:1px solid #2f2f38;padding:10px 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-    <?php if(!empty($p['imagen_principal'])): ?><img src="<?= htmlspecialchars(cw_public_asset_url((string)$p['imagen_principal'])) ?>" alt="" style="width:56px;height:56px;object-fit:cover;border-radius:8px"><?php endif; ?>
+    <?php if(!empty($p['imagen_principal'])): ?><img src="<?= htmlspecialchars('/' . ltrim(cw_public_asset_url((string)$p['imagen_principal']), '/')) ?>" alt="" style="width:56px;height:56px;object-fit:cover;border-radius:8px" data-preview-check><small data-preview-state style="display:block;color:#aaa">Cargando preview...</small><?php endif; ?>
     <div>
       <b><?= htmlspecialchars((string)($p['nombre'] ?? '')) ?></b>
-      <?php $ruta=(string)($p['imagen_principal'] ?? ''); $u=cw_public_asset_url($ruta); $f=__DIR__.'/../'.ltrim(str_replace('/ventas/','',$ruta),'/'); ?><div>Categoría: <?= htmlspecialchars((string)($p['categoria_slug'] ?? '')) ?> | Precio: <?= htmlspecialchars((string)($p['precio'] ?? '0')) ?></div><div>Ruta: <?= htmlspecialchars($ruta) ?></div><div>URL renderizada: <?= htmlspecialchars($u) ?></div><div>Archivo físico: <?= is_file($f)?'OK':'NO EXISTE' ?> | <?= htmlspecialchars(cw_drive_status_text()) ?></div>
+      <?php $ruta=(string)($p['imagen_principal'] ?? ''); $u='/' . ltrim(cw_public_asset_url($ruta), '/'); $f=__DIR__.'/../'.ltrim(str_replace('/ventas/','',$ruta),'/'); ?><div>Categoría: <?= htmlspecialchars((string)($p['categoria_slug'] ?? '')) ?> | Precio: <?= htmlspecialchars((string)($p['precio'] ?? '0')) ?></div><div>Ruta: <?= htmlspecialchars($ruta) ?></div><div>URL renderizada: <?= htmlspecialchars($u) ?></div><div>Archivo físico: <?= is_file($f)?'OK':'NO EXISTE' ?> | <?= htmlspecialchars(cw_drive_status_text()) ?></div>
     </div>
     <a class="cw-btn" href="?edit=<?= (int)$p['id'] ?>">Editar</a>
     <form method="post" onsubmit="return confirm('¿Eliminar producto?');" style="display:inline">
@@ -78,3 +78,5 @@ cw_layout_header('Productos públicos');
 <?php endforeach; ?>
 </div>
 <?php cw_layout_footer(); ?>
+
+<script>document.querySelectorAll('[data-preview-check]').forEach(function(img){var s=img.parentElement.querySelector('[data-preview-state]');if(!s)return;img.addEventListener('load',function(){s.textContent='Preview OK';s.style.color='#8fd98f';});img.addEventListener('error',function(){s.textContent='Preview NO CARGA';s.style.color='#ff9a9a';});});</script>
