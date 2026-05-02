@@ -7,7 +7,10 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
   $n=&$data['negocio'];
   foreach(['nombre','descripcion','footer_descripcion','correo','telefono','whatsapp','direccion','copyright','texto_atencion','texto_envios'] as $k){$n[$k]=trim((string)($_POST[$k]??''));}
   $n['redes']['tiktok']=trim((string)($_POST['tiktok']??'')); $n['redes']['facebook']=trim((string)($_POST['facebook']??'')); $n['redes']['instagram']=trim((string)($_POST['instagram']??''));
-  $data['drive']['enabled']=isset($_POST['drive_enabled']); $data['drive']['folder_id']=trim((string)($_POST['drive_folder_id']??'')); $data['drive']['mode']=trim((string)($_POST['drive_mode']??'local')); $data['drive']['status']=$data['drive']['enabled'] && $data['drive']['folder_id']==='' ? 'Drive no configurado' : ($data['drive']['enabled'] ? 'Drive configurado' : 'Drive no configurado'); $data['drive']['last_sync']=(string)($data['drive']['last_sync'] ?? '');
+  $data['drive']['enabled']=isset($_POST['drive_enabled']); $data['drive']['folder_id']=trim((string)($_POST['drive_folder_id']??'')); $data['drive']['mode']=trim((string)($_POST['drive_mode']??'local')); if($data['drive']['mode']==='ambos') $data['drive']['mode']='both'; $data['drive']['status']=$data['drive']['enabled'] && $data['drive']['folder_id']==='' ? 'Drive no configurado' : ($data['drive']['enabled'] ? 'Drive configurado' : 'Drive no configurado'); $data['drive']['last_sync']=(string)($data['drive']['last_sync'] ?? '');
+  $data['config']['drive_enabled'] = $data['drive']['enabled'] ? 1 : 0;
+  $data['config']['drive_folder_id'] = $data['drive']['folder_id'];
+  $data['config']['drive_mode'] = $data['drive']['mode'];
   try { cw_save($data); header('Location: ' . basename(__FILE__) . '?ok=1'); exit; } catch (Throwable $e) { $msg = 'No se pudo guardar. Revisa permisos de la carpeta data.'; }
 }
 cw_layout_header('Negocio / Footer'); $n=$data['negocio']??[]; $r=$n['redes']??[]; $c=$data['config']??[]; $drive=$data['drive']??[]; ?>
@@ -31,7 +34,7 @@ cw_layout_header('Negocio / Footer'); $n=$data['negocio']??[]; $r=$n['redes']??[
 <h3>Google Drive</h3>
 <label><input type="checkbox" name="drive_enabled" <?= (!empty($drive['enabled']))?'checked':'' ?>> Activar Drive</label><br>
 <input class="cw-input" name="drive_folder_id" placeholder="Carpeta Drive ID" value="<?= htmlspecialchars((string)($drive['folder_id']??'')) ?>"><br>
-<select class="cw-select" name="drive_mode"><option value="local" <?= (($drive['mode']??'local')==='local')?'selected':'' ?>>local</option><option value="drive" <?= (($drive['mode']??'local')==='drive')?'selected':'' ?>>drive</option><option value="ambos" <?= (($drive['mode']??'local')==='ambos')?'selected':'' ?>>ambos</option></select><br>
+<select class="cw-select" name="drive_mode"><option value="local" <?= (($drive['mode']??'local')==='local')?'selected':'' ?>>local</option><option value="drive" <?= (($drive['mode']??'local')==='drive')?'selected':'' ?>>drive</option><option value="both" <?= (($drive['mode']??'local')==='both' || ($drive['mode']??'local')==='ambos')?'selected':'' ?>>both</option></select><br>
 <p>Estado: <?= htmlspecialchars((string)($drive['status']??'Drive no configurado')) ?></p>
 <p>Última sincronización: <?= htmlspecialchars((string)($drive['last_sync']??'')) ?></p><p><a class="cw-btn" href="drive_connect.php">Conectar Google Drive</a> <a class="cw-btn" href="drive_test.php">Probar conexión</a> <a class="cw-btn" href="drive_disconnect.php">Desconectar Drive</a></p>
 <button class="cw-btn">Guardar</button></form></div>

@@ -14,8 +14,9 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
   }catch(Throwable $e){$error=$e->getMessage();}
   $data=cw_load();
 }
-cw_layout_header('Categorías públicas'); ?>
+cw_layout_header('Categorías públicas'); $diag = cw_drive_diagnostics(); ?>
 <div class="cw-card"><h1>Categorías públicas</h1><?php if($ok):?><p class="cw-msg ok"><?=htmlspecialchars($ok)?></p><?php endif;?><?php if($error):?><p class="cw-msg err"><?=htmlspecialchars($error)?></p><?php endif;?>
+<p>Diagnóstico: local <b>OK</b> | Drive <b><?= htmlspecialchars($diag['drive']) ?></b> | token <b><?= htmlspecialchars($diag['token']) ?></b> | folder ID <b><?= htmlspecialchars($diag['folder_id']) ?></b></p>
 <form method="post" enctype="multipart/form-data">
 <input type="hidden" name="edit_id" value="<?= (int)($edit['id']??0) ?>">
 <label>Nombre de categoría <input class="cw-input" required name="nombre" value="<?= htmlspecialchars((string)($edit['nombre']??'')) ?>"></label><br>
@@ -28,7 +29,7 @@ cw_layout_header('Categorías públicas'); ?>
 <div class="cw-card"><h2>Listado</h2>
 <?php foreach(($data['categorias']??[]) as $c): ?><div style="display:flex;gap:12px;align-items:center;border-bottom:1px solid #2f2f38;padding:8px 0">
 <?php if(!empty($c['imagen'])):?><img src="<?= htmlspecialchars('/' . ltrim(cw_public_asset_url((string)$c['imagen']), '/')) ?>" style="width:56px;height:56px;object-fit:cover;border-radius:8px" data-preview-check><small data-preview-state style="display:block;color:#aaa">Cargando preview...</small><?php endif; ?>
-<div><b><?=htmlspecialchars($c['nombre'])?></b><div><?=htmlspecialchars($c['slug'])?> | <?=htmlspecialchars($c['url'])?></div><?php $ruta=(string)($c['imagen'] ?? ''); $f=__DIR__.'/../'.ltrim(str_replace('/ventas/','',$ruta),'/'); ?><?php $u='/' . ltrim(cw_public_asset_url($ruta), '/'); ?><div>Ruta: <?= htmlspecialchars($ruta) ?></div><div>URL renderizada: <?= htmlspecialchars($u) ?></div><div>Archivo físico: <?= is_file($f) ? 'OK' : 'NO EXISTE' ?></div><div><?= htmlspecialchars(cw_drive_status_text()) ?></div></div>
+<div><b><?=htmlspecialchars($c['nombre'])?></b><div><?=htmlspecialchars($c['slug'])?> | <?=htmlspecialchars($c['url'])?></div><?php $ruta=(string)($c['imagen'] ?? ''); $f=__DIR__.'/../'.ltrim(str_replace('/ventas/','',$ruta),'/'); ?><?php $u='/' . ltrim(cw_public_asset_url($ruta), '/'); ?><div>Ruta: <?= htmlspecialchars($ruta) ?></div><div>URL renderizada: <?= htmlspecialchars($u) ?></div><div>Archivo físico: <?= is_file($f) ? 'OK' : 'NO EXISTE' ?></div><div>Drive ID: <?= htmlspecialchars((string)($c['imagen_drive_id'] ?? '')) ?></div><div>Drive URL: <?= htmlspecialchars((string)($c['imagen_drive_url'] ?? '')) ?></div><div>Thumb URL: <?= htmlspecialchars((string)($c['imagen_thumb_url'] ?? '')) ?></div><div>Source: <?= htmlspecialchars((string)($c['imagen_original_source'] ?? 'local')) ?></div></div>
 <a class="cw-btn" href="?edit=<?= (int)$c['id'] ?>">Editar</a>
 <form method="post" style="display:inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="delete_id" value="<?= (int)$c['id'] ?>"><button class="cw-btn" onclick="return confirm('¿Eliminar?')">Eliminar</button></form>
 </div><?php endforeach; ?></div>

@@ -57,3 +57,7 @@ Notas:
 - El botón de Equipo redirige a https://ventas.suaveurbanstudio.com.mx/
 - El home muestra productos destacados y 5 modelos por cada categoría.
 - Si no hay categorías/productos, muestra avisos limpios en vez de textos de prueba.
+
+Validación rápida recomendada:
+- Ejecuta `php -l index.php` para comprobar sintaxis básica del punto de entrada.
+- Si vas a desplegar cambios amplios, valida también `php -l categoria.php` y `php -l producto.php`.

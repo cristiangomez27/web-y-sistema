@@ -41,9 +41,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $editProduct = null; foreach (($data['productos'] ?? []) as $p) if ((int)($p['id'] ?? 0) === $editId) { $editProduct = $p; break; }
 }
 
-cw_layout_header('Productos públicos');
+cw_layout_header('Productos públicos'); $diag = cw_drive_diagnostics();
 ?>
 <div class="cw-card"><h1>Productos públicos</h1><?php if($msg): ?><p class="cw-msg ok"><?= htmlspecialchars($msg) ?></p><?php endif; ?><?php if($err): ?><p class="cw-msg err"><?= htmlspecialchars($err) ?></p><?php endif; ?>
+<p>Diagnóstico: local <b>OK</b> | Drive <b><?= htmlspecialchars($diag['drive']) ?></b> | token <b><?= htmlspecialchars($diag['token']) ?></b> | folder ID <b><?= htmlspecialchars($diag['folder_id']) ?></b></p>
 <form method="post" enctype="multipart/form-data">
 <input type="hidden" name="edit_id" value="<?= (int)($editProduct['id'] ?? 0) ?>">
 <input class="cw-input" name="nombre" required placeholder="Nombre del producto" value="<?= htmlspecialchars((string)($editProduct['nombre'] ?? '')) ?>"><br>
@@ -67,7 +68,7 @@ cw_layout_header('Productos públicos');
     <?php if(!empty($p['imagen_principal'])): ?><img src="<?= htmlspecialchars('/' . ltrim(cw_public_asset_url((string)$p['imagen_principal']), '/')) ?>" alt="" style="width:56px;height:56px;object-fit:cover;border-radius:8px" data-preview-check><small data-preview-state style="display:block;color:#aaa">Cargando preview...</small><?php endif; ?>
     <div>
       <b><?= htmlspecialchars((string)($p['nombre'] ?? '')) ?></b>
-      <?php $ruta=(string)($p['imagen_principal'] ?? ''); $u='/' . ltrim(cw_public_asset_url($ruta), '/'); $f=__DIR__.'/../'.ltrim(str_replace('/ventas/','',$ruta),'/'); ?><div>Categoría: <?= htmlspecialchars((string)($p['categoria_slug'] ?? '')) ?> | Precio: <?= htmlspecialchars((string)($p['precio'] ?? '0')) ?></div><div>Ruta: <?= htmlspecialchars($ruta) ?></div><div>URL renderizada: <?= htmlspecialchars($u) ?></div><div>Archivo físico: <?= is_file($f)?'OK':'NO EXISTE' ?> | <?= htmlspecialchars(cw_drive_status_text()) ?></div>
+      <?php $ruta=(string)($p['imagen_principal'] ?? ''); $u='/' . ltrim(cw_public_asset_url($ruta), '/'); $f=__DIR__.'/../'.ltrim(str_replace('/ventas/','',$ruta),'/'); ?><div>Categoría: <?= htmlspecialchars((string)($p['categoria_slug'] ?? '')) ?> | Precio: <?= htmlspecialchars((string)($p['precio'] ?? '0')) ?></div><div>Ruta: <?= htmlspecialchars($ruta) ?></div><div>URL renderizada: <?= htmlspecialchars($u) ?></div><div>Archivo físico: <?= is_file($f)?'OK':'NO EXISTE' ?></div><div>Drive ID: <?= htmlspecialchars((string)($p['imagen_drive_id'] ?? '')) ?></div><div>Drive URL: <?= htmlspecialchars((string)($p['imagen_drive_url'] ?? '')) ?></div><div>Thumb URL: <?= htmlspecialchars((string)($p['imagen_thumb_url'] ?? '')) ?></div><div>Source: <?= htmlspecialchars((string)($p['imagen_original_source'] ?? 'local')) ?></div>
     </div>
     <a class="cw-btn" href="?edit=<?= (int)$p['id'] ?>">Editar</a>
     <form method="post" onsubmit="return confirm('¿Eliminar producto?');" style="display:inline">
