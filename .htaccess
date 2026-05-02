@@ -8,6 +8,7 @@ RedirectMatch 403 ^/ventas/private/
 RedirectMatch 403 ^/private/
 RedirectMatch 403 \.(env|ini|log|sql|bak)$
 RedirectMatch 403 ^/ventas/configuracion_web/data/
+RedirectMatch 403 ^/ventas/configuracion_web/private/
 
 # Rutas limpias de la tienda pública.
 RewriteRule ^producto/([0-9]+)-([a-z0-9-]+)/?$ producto.php?id=$1&slug=$2 [L,QSA]

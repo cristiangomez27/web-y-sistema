@@ -44,3 +44,54 @@ function cw_delete_category(int $id): bool { $d=cw_load(); $d['categorias']=arra
 function cw_add_product(array $payload): array { $d=cw_load(); $payload['id']=cw_next_id($d['productos']??[]); $payload['slug']=cw_slug((string)($payload['nombre']??'producto')); $payload['imagen_principal']=cw_public_asset_url((string)($payload['imagen_principal']??'')); $payload['orden']=(int)($payload['orden']??cw_next_order($d['productos']??[])); $d['productos'][]=$payload; cw_save($d); return $payload; }
 function cw_update_product(int $id,array $changes): bool { $d=cw_load(); foreach(($d['productos']??[]) as $i=>$p){ if((int)$p['id']!==$id) continue; if(isset($changes['imagen_principal']))$changes['imagen_principal']=cw_public_asset_url((string)$changes['imagen_principal']); $d['productos'][$i]=array_replace($p,$changes); cw_save($d); return true;} return false; }
 function cw_delete_product(int $id): bool { $d=cw_load(); $d['productos']=array_values(array_filter($d['productos']??[],fn($p)=>(int)$p['id']!==$id)); cw_save($d); return true; }
+
+
+function cw_drive_private_dir(): string { return __DIR__ . '/private'; }
+function cw_drive_client_path(): string { return cw_drive_private_dir() . '/google-oauth-client.json'; }
+function cw_drive_token_path(): string { return cw_drive_private_dir() . '/google-drive-token.json'; }
+function cw_drive_oauth_client(): ?object {
+  if (!class_exists('Google_Client')) {
+    $autoload = __DIR__ . '/../../vendor/autoload.php';
+    if (is_file($autoload)) require_once $autoload;
+  }
+  if (!class_exists('Google_Client')) return null;
+  if (!is_file(cw_drive_client_path())) throw new RuntimeException('Falta google-oauth-client.json');
+  $client = new Google_Client();
+  $client->setAuthConfig(cw_drive_client_path());
+  $client->setAccessType('offline');
+  $client->setPrompt('consent');
+  $client->setScopes(['https://www.googleapis.com/auth/drive.file']);
+  $client->setRedirectUri('https://ventas.suaveurbanstudio.com.mx/configuracion_web/drive_callback.php');
+  return $client;
+}
+function cw_drive_is_connected(): bool { return is_file(cw_drive_token_path()); }
+function cw_drive_refresh_token_if_needed(): ?array {
+  $client = cw_drive_oauth_client(); if(!$client) return null;
+  if (!is_file(cw_drive_token_path())) return null;
+  $token = json_decode((string)file_get_contents(cw_drive_token_path()), true); if(!is_array($token)) return null;
+  $client->setAccessToken($token);
+  if ($client->isAccessTokenExpired() && !empty($token['refresh_token'])) {
+    $new = $client->fetchAccessTokenWithRefreshToken($token['refresh_token']);
+    $token = array_replace($token, is_array($new)?$new:[]);
+    file_put_contents(cw_drive_token_path(), json_encode($token, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
+  }
+  return $token;
+}
+function cw_drive_upload_file(string $localPath, string $filename, string $mimeType='application/octet-stream'): array {
+  $client = cw_drive_oauth_client(); if(!$client) return ['ok'=>false,'error'=>'Google Client no disponible'];
+  $token = cw_drive_refresh_token_if_needed(); if(!$token) return ['ok'=>false,'error'=>'Drive no configurado'];
+  $client->setAccessToken($token);
+  $service = new Google_Service_Drive($client);
+  $meta = new Google_Service_Drive_DriveFile(['name'=>$filename,'parents'=>[cw_drive_folder_id()]]);
+  $file = $service->files->create($meta, ['data'=>(string)file_get_contents($localPath),'mimeType'=>$mimeType,'uploadType'=>'multipart','fields'=>'id']);
+  $id = (string)$file->id; cw_drive_make_public($id, $service);
+  return ['ok'=>true,'id'=>$id,'url'=>cw_drive_public_url($id),'thumb'=>cw_drive_thumb_url($id)];
+}
+function cw_drive_make_public(string $fileId, $service=null): void {
+  if (!$service) { $client=cw_drive_oauth_client(); if(!$client) return; $tok=cw_drive_refresh_token_if_needed(); if(!$tok) return; $client->setAccessToken($tok); $service = new Google_Service_Drive($client); }
+  $perm = new Google_Service_Drive_Permission(['type'=>'anyone','role'=>'reader']);
+  $service->permissions->create($fileId, $perm);
+}
+function cw_drive_public_url(string $fileId): string { return 'https://drive.google.com/uc?id=' . rawurlencode($fileId); }
+function cw_drive_thumb_url(string $fileId): string { return 'https://drive.google.com/thumbnail?id=' . rawurlencode($fileId) . '&sz=w1000'; }
+function cw_drive_test_connection(): bool { return cw_drive_is_connected() && cw_drive_configured() && (cw_drive_oauth_client()!==null); }

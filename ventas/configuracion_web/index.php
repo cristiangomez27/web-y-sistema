@@ -33,6 +33,6 @@ cw_layout_header('Negocio / Footer'); $n=$data['negocio']??[]; $r=$n['redes']??[
 <input class="cw-input" name="drive_folder_id" placeholder="Carpeta Drive ID" value="<?= htmlspecialchars((string)($drive['folder_id']??'')) ?>"><br>
 <select class="cw-select" name="drive_mode"><option value="local" <?= (($drive['mode']??'local')==='local')?'selected':'' ?>>local</option><option value="drive" <?= (($drive['mode']??'local')==='drive')?'selected':'' ?>>drive</option><option value="ambos" <?= (($drive['mode']??'local')==='ambos')?'selected':'' ?>>ambos</option></select><br>
 <p>Estado: <?= htmlspecialchars((string)($drive['status']??'Drive no configurado')) ?></p>
-<p>Última sincronización: <?= htmlspecialchars((string)($drive['last_sync']??'')) ?></p>
+<p>Última sincronización: <?= htmlspecialchars((string)($drive['last_sync']??'')) ?></p><p><a class="cw-btn" href="drive_connect.php">Conectar Google Drive</a> <a class="cw-btn" href="drive_test.php">Probar conexión</a> <a class="cw-btn" href="drive_disconnect.php">Desconectar Drive</a></p>
 <button class="cw-btn">Guardar</button></form></div>
 <?php cw_layout_footer(); ?>

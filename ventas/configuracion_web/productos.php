@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       if ($nombre === '' || !$cat) throw new RuntimeException('Nombre y categoría válida son obligatorios.');
       $img = cw_upload_public_image($_FILES["imagen"] ?? [], "productos");
       $payload = ['nombre'=>$nombre,'slug'=>cw_slug($nombre),'categoria_id'=>$catId,'categoria_slug'=>(string)($cat['slug'] ?? ''),'precio'=>(float)($_POST['precio'] ?? 0),'descripcion'=>trim((string)($_POST['descripcion'] ?? '')),'descripcion_larga'=>trim((string)($_POST['descripcion_larga'] ?? '')),'tallas'=>trim((string)($_POST['tallas'] ?? '')),'colores'=>trim((string)($_POST['colores'] ?? '')),'precio_oferta'=>(float)($_POST['precio_oferta'] ?? 0),'destacado'=>isset($_POST['destacado'])?1:0,'stock'=>trim((string)($_POST['stock'] ?? '')),'orden'=>(int)($_POST['orden'] ?? 0),'activo'=>isset($_POST['activo']) ? 1 : 0];
-      if ($img !== '') $payload['imagen_principal'] = $img;
+      if ($img !== '') { $payload['imagen_principal'] = $img; $payload = array_merge($payload, cw_last_upload_meta()); }
       $id = (int)($_POST['edit_id'] ?? 0);
       if ($id > 0) {
         cw_update_product($id, $payload);
