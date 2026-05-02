@@ -274,7 +274,6 @@ function sw_normalize_web_data(array $data): array {
         $c['descripcion'] = (string)($c['descripcion'] ?? '');
         $imgRaw = (string)($c['imagen'] ?? $c['imagen_categoria'] ?? $c['imagen_principal'] ?? $c['image'] ?? $c['ruta_imagen'] ?? '');
         $c['imagen'] = $imgRaw;
-        if ($imgRaw !== '' && !str_contains($imgRaw, '/')) { $imgRaw = '/ventas/uploads/web/categorias/' . ltrim($imgRaw, '/'); }
         $c['imagen_url'] = sw_abs_url($imgRaw);
         $c['url'] = '/' . ltrim($c['slug'], '/');
         $c['activa'] = (int)($c['activa'] ?? 1);
