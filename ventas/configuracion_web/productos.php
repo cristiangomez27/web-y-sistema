@@ -67,7 +67,7 @@ cw_layout_header('Productos públicos');
     <?php if(!empty($p['imagen_principal'])): ?><img src="<?= htmlspecialchars(cw_public_asset_url((string)$p['imagen_principal'])) ?>" alt="" style="width:56px;height:56px;object-fit:cover;border-radius:8px"><?php endif; ?>
     <div>
       <b><?= htmlspecialchars((string)($p['nombre'] ?? '')) ?></b>
-      <div>Categoría: <?= htmlspecialchars((string)($p['categoria_slug'] ?? '')) ?> | Precio: <?= htmlspecialchars((string)($p['precio'] ?? '0')) ?></div>
+      <?php $ruta=(string)($p['imagen_principal'] ?? ''); $u=cw_public_asset_url($ruta); $f=__DIR__.'/../'.ltrim(str_replace('/ventas/','',$ruta),'/'); ?><div>Categoría: <?= htmlspecialchars((string)($p['categoria_slug'] ?? '')) ?> | Precio: <?= htmlspecialchars((string)($p['precio'] ?? '0')) ?></div><div>Ruta: <?= htmlspecialchars($ruta) ?></div><div>URL renderizada: <?= htmlspecialchars($u) ?></div><div>Archivo físico: <?= is_file($f)?'OK':'NO EXISTE' ?> | <?= htmlspecialchars(cw_drive_status_text()) ?></div>
     </div>
     <a class="cw-btn" href="?edit=<?= (int)$p['id'] ?>">Editar</a>
     <form method="post" onsubmit="return confirm('¿Eliminar producto?');" style="display:inline">

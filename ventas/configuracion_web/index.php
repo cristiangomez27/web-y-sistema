@@ -7,10 +7,10 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
   $n=&$data['negocio'];
   foreach(['nombre','descripcion','footer_descripcion','correo','telefono','whatsapp','direccion','copyright','texto_atencion','texto_envios'] as $k){$n[$k]=trim((string)($_POST[$k]??''));}
   $n['redes']['tiktok']=trim((string)($_POST['tiktok']??'')); $n['redes']['facebook']=trim((string)($_POST['facebook']??'')); $n['redes']['instagram']=trim((string)($_POST['instagram']??''));
-  $c=&$data['config']; $c['drive_enabled']=isset($_POST['drive_enabled'])?1:0; $c['drive_folder_id']=trim((string)($_POST['drive_folder_id']??'')); $c['drive_mode']=trim((string)($_POST['drive_mode']??'local')); $c['drive_status']=$c['drive_enabled'] && $c['drive_folder_id']==='' ? 'Drive activo sin carpeta' : ($c['drive_enabled'] ? 'Listo para sincronizar' : 'No configurado'); $c['drive_last_sync']=(string)($c['drive_last_sync'] ?? '');
+  $data['drive']['enabled']=isset($_POST['drive_enabled']); $data['drive']['folder_id']=trim((string)($_POST['drive_folder_id']??'')); $data['drive']['mode']=trim((string)($_POST['drive_mode']??'local')); $data['drive']['status']=$data['drive']['enabled'] && $data['drive']['folder_id']==='' ? 'Drive no configurado' : ($data['drive']['enabled'] ? 'Drive configurado' : 'Drive no configurado'); $data['drive']['last_sync']=(string)($data['drive']['last_sync'] ?? '');
   try { cw_save($data); header('Location: ' . basename(__FILE__) . '?ok=1'); exit; } catch (Throwable $e) { $msg = 'No se pudo guardar. Revisa permisos de la carpeta data.'; }
 }
-cw_layout_header('Negocio / Footer'); $n=$data['negocio']??[]; $r=$n['redes']??[]; $c=$data['config']??[]; ?>
+cw_layout_header('Negocio / Footer'); $n=$data['negocio']??[]; $r=$n['redes']??[]; $c=$data['config']??[]; $drive=$data['drive']??[]; ?>
 <div class="cw-card"><h1>Datos del negocio / Footer</h1><?php if($msg):?><p class="cw-msg ok"><?=htmlspecialchars($msg)?></p><?php endif; ?>
 <form method="post" enctype="multipart/form-data">
 <label>Logo <input type="file" class="cw-input" name="logo" accept="image/*"></label><br>
@@ -29,10 +29,10 @@ cw_layout_header('Negocio / Footer'); $n=$data['negocio']??[]; $r=$n['redes']??[
 <input class="cw-input" name="texto_atencion" placeholder="Texto de atención" value="<?= htmlspecialchars((string)($n['texto_atencion']??'')) ?>"><br>
 <input class="cw-input" name="texto_envios" placeholder="Texto envíos/devoluciones" value="<?= htmlspecialchars((string)($n['texto_envios']??'')) ?>"><br>
 <h3>Google Drive</h3>
-<label><input type="checkbox" name="drive_enabled" <?= ((int)($c['drive_enabled']??0)===1)?'checked':'' ?>> Activar Drive</label><br>
-<input class="cw-input" name="drive_folder_id" placeholder="Carpeta Drive ID" value="<?= htmlspecialchars((string)($c['drive_folder_id']??'')) ?>"><br>
-<select class="cw-select" name="drive_mode"><option value="local" <?= (($c['drive_mode']??'local')==='local')?'selected':'' ?>>local</option><option value="drive" <?= (($c['drive_mode']??'local')==='drive')?'selected':'' ?>>drive</option><option value="ambos" <?= (($c['drive_mode']??'local')==='ambos')?'selected':'' ?>>ambos</option></select><br>
-<p>Estado: <?= htmlspecialchars((string)($c['drive_status']??'No configurado')) ?></p>
-<p>Última sincronización: <?= htmlspecialchars((string)($c['drive_last_sync']??'')) ?></p>
+<label><input type="checkbox" name="drive_enabled" <?= (!empty($drive['enabled']))?'checked':'' ?>> Activar Drive</label><br>
+<input class="cw-input" name="drive_folder_id" placeholder="Carpeta Drive ID" value="<?= htmlspecialchars((string)($drive['folder_id']??'')) ?>"><br>
+<select class="cw-select" name="drive_mode"><option value="local" <?= (($drive['mode']??'local')==='local')?'selected':'' ?>>local</option><option value="drive" <?= (($drive['mode']??'local')==='drive')?'selected':'' ?>>drive</option><option value="ambos" <?= (($drive['mode']??'local')==='ambos')?'selected':'' ?>>ambos</option></select><br>
+<p>Estado: <?= htmlspecialchars((string)($drive['status']??'Drive no configurado')) ?></p>
+<p>Última sincronización: <?= htmlspecialchars((string)($drive['last_sync']??'')) ?></p>
 <button class="cw-btn">Guardar</button></form></div>
 <?php cw_layout_footer(); ?>
