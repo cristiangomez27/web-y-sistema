@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/_public_web_store.php'; require_once __DIR__ . '/layout_web.php';
-$data=cw_load(); $msg='';
+$data=cw_load(); $msg=(string)($_GET['ok'] ?? '');
 if($_SERVER['REQUEST_METHOD']==='POST'){
   $logo = cw_upload_public_image($_FILES['logo'] ?? [], 'diseno');
   if($logo!=='') $data['config']['logo']=$logo;
@@ -8,7 +8,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
   foreach(['nombre','descripcion','footer_descripcion','correo','telefono','whatsapp','direccion','copyright','texto_atencion','texto_envios'] as $k){$n[$k]=trim((string)($_POST[$k]??''));}
   $n['redes']['tiktok']=trim((string)($_POST['tiktok']??'')); $n['redes']['facebook']=trim((string)($_POST['facebook']??'')); $n['redes']['instagram']=trim((string)($_POST['instagram']??''));
   $c=&$data['config']; $c['drive_enabled']=isset($_POST['drive_enabled'])?1:0; $c['drive_folder_id']=trim((string)($_POST['drive_folder_id']??'')); $c['drive_mode']=trim((string)($_POST['drive_mode']??'local')); $c['drive_status']=$c['drive_enabled'] && $c['drive_folder_id']==='' ? 'Drive activo sin carpeta' : ($c['drive_enabled'] ? 'Listo para sincronizar' : 'No configurado'); $c['drive_last_sync']=(string)($c['drive_last_sync'] ?? '');
-  cw_save($data); $msg='Configuración pública guardada.';
+  try { cw_save($data); header('Location: ' . basename(__FILE__) . '?ok=1'); exit; } catch (Throwable $e) { $msg = 'No se pudo guardar. Revisa permisos de la carpeta data.'; }
 }
 cw_layout_header('Negocio / Footer'); $n=$data['negocio']??[]; $r=$n['redes']??[]; $c=$data['config']??[]; ?>
 <div class="cw-card"><h1>Datos del negocio / Footer</h1><?php if($msg):?><p class="cw-msg ok"><?=htmlspecialchars($msg)?></p><?php endif; ?>

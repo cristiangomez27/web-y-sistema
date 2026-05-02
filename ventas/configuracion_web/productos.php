@@ -7,7 +7,7 @@ function cw_find_category(array $data, int $catId): ?array {
   return null;
 }
 $data = cw_load();
-$msg=''; $err='';
+$msg=(string)($_GET['ok'] ?? ''); $err='';
 $editId = (int)($_GET['edit'] ?? $_POST['edit_id'] ?? 0);
 $editProduct = null;
 foreach (($data['productos'] ?? []) as $p) if ((int)($p['id'] ?? 0) === $editId) { $editProduct = $p; break; }
@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   try {
     if (($_POST['action'] ?? '') === 'delete') {
       cw_delete_product((int)($_POST['delete_id'] ?? 0));
-      $msg = 'Producto eliminado.';
+      header('Location: ' . basename(__FILE__) . '?ok=1'); exit;
     } else {
       $catId = (int)($_POST['categoria_id'] ?? 0);
       $nombre = trim((string)($_POST['nombre'] ?? ''));
@@ -28,11 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $id = (int)($_POST['edit_id'] ?? 0);
       if ($id > 0) {
         cw_update_product($id, $payload);
-        $msg = 'Producto actualizado.';
+        header('Location: ' . basename(__FILE__) . '?ok=1'); exit;
       } else {
         $payload = array_replace(['imagen_principal'=>'','precio_oferta'=>0,'destacado'=>0,'stock'=>'','orden'=>0], $payload);
         cw_add_product($payload);
-        $msg = 'Producto guardado.';
+        header('Location: ' . basename(__FILE__) . '?ok=1'); exit;
       }
     }
   } catch (Throwable $e) { $err = $e->getMessage(); }

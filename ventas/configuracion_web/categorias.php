@@ -8,8 +8,8 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
       $img=cw_upload_public_image($_FILES['imagen'] ?? [], 'categorias');
       $name=trim((string)($_POST['nombre']??'')); if($name==='') throw new RuntimeException('Nombre requerido.');
       $id=(int)($_POST['edit_id']??0);
-      if($id>0){ $changes=['nombre'=>$name,'activa'=>isset($_POST['activa'])?1:0,'menu'=>isset($_POST['menu'])?1:0,'footer'=>isset($_POST['footer'])?1:0]; if($img!=='') $changes['imagen']=$img; cw_update_category($id,$changes); $ok='Categoría actualizada.'; }
-      else { cw_add_category($name, $img); $ok='Categoría creada.'; }
+      if($id>0){ $changes=['nombre'=>$name,'activa'=>isset($_POST['activa'])?1:0,'menu'=>isset($_POST['menu'])?1:0,'footer'=>isset($_POST['footer'])?1:0]; if($img!=='') $changes['imagen']=$img; cw_update_category($id,$changes); header('Location: ' . basename(__FILE__) . '?ok=1'); exit; }
+      else { cw_add_category($name, $img); header('Location: ' . basename(__FILE__) . '?ok=1'); exit; }
     }
   }catch(Throwable $e){$error=$e->getMessage();}
   $data=cw_load();

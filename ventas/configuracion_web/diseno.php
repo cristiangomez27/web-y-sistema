@@ -1,11 +1,11 @@
 <?php
 require_once __DIR__ . '/_public_web_store.php'; require_once __DIR__ . '/layout_web.php';
-$data=cw_load(); $msg='';
+$data=cw_load(); $msg=(string)($_GET['ok'] ?? '');
 if($_SERVER['REQUEST_METHOD']==='POST'){
   foreach(['banner_principal','fondo_principal','logo'] as $f){ $u=cw_upload_public_image($_FILES[$f] ?? [], 'diseno'); if($u!=='') $data['config'][$f]=$u; }
   $data['config']['color_primario']=trim((string)($_POST['color_primario']??'#d4af37'));
   $data['config']['color_secundario']=trim((string)($_POST['color_secundario']??'#ffe08a'));
-  cw_save($data); $msg='Diseño público guardado.';
+  cw_save($data); header('Location: ' . basename(__FILE__) . '?ok=1'); exit;
 }
 cw_layout_header('Diseño Web Pública'); $c=$data['config']??[]; ?>
 <div class="cw-card"><h1>Diseño Web Pública</h1><?php if($msg):?><p class="cw-msg ok"><?=htmlspecialchars($msg)?></p><?php endif;?>
