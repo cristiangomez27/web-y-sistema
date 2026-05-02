@@ -45,12 +45,7 @@ $footerPaginas = array_values(array_filter($data['paginas'] ?? [], fn($p) => (in
     <div class="footer-bottom"><p><?= sw_e($negocio['copyright'] ?? ('© ' . date('Y') . ' Suave Urban Studio. Todos los derechos reservados.')) ?></p></div>
 </footer>
 
-<nav class="bottom-nav">
-    <a href="/">⌂<b>Inicio</b></a>
-    <a href="/colecciones">▦<b>Tienda</b></a>
-    <a href="/favoritos">♡<b>Deseos</b><span data-fav-count>0</span></a>
-    <a href="/carrito">🛒<b>Carrito</b><span data-cart-count>0</span></a>
-</nav>
+
 
 <script src="/assets/js/suave-web-clean.js?v=<?= sw_e(SUAVE_WEB_VERSION) ?>" defer></script>
 </body>
