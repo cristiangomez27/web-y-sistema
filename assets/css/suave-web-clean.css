@@ -54,6 +54,10 @@
 @media (max-width:780px){
   .hero.hero--background-models{min-height:500px;padding:34px 20px;border-radius:30px}
   .hero.hero--background-models:before{background:linear-gradient(180deg,rgba(7,7,9,.78) 0%,rgba(7,7,9,.68) 44%,rgba(7,7,9,.88) 100%)}
-  .hero--background-models .hero__media--bg img{object-position:center top;opacity:.40}
+  .hero--background-models .hero__media--bg img{object-position:center center;opacity:.58;transform:scale(1.08)}
   .hero--background-models .hero__copy{max-width:none}
 }
+
+@media (max-width:780px){.menu-open .bottom-nav{display:none!important}}
+
+@media (max-width:780px){.lookbook-card__media img{object-position:center center}.lookbook-card{min-height:460px!important}}
