@@ -61,3 +61,5 @@
 @media (max-width:780px){.menu-open .bottom-nav{display:none!important}}
 
 @media (max-width:780px){.lookbook-card__media img{object-position:center center;opacity:.95}.lookbook-card{min-height:500px!important}}
+
+@media (max-width:780px){.lookbook-card__media img,.product-card__media img{object-fit:contain!important;object-position:center center!important;background:#0e0e12}}
